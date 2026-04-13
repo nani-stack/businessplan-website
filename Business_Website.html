@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FinAxis AI – Your Complete Financial Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #070b14;
+    --surface: #0d1526;
+    --surface2: #111d35;
+    --accent: #00e5ff;
+    --accent2: #7b61ff;
+    --gold: #f5c542;
+    --text: #e8edf5;
+    --muted: #6b7f9e;
+    --border: rgba(0,229,255,0.12);
+    --glow: 0 0 40px rgba(0,229,255,0.18);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: rgba(7,11,20,0.82);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem; letter-spacing: 3px;
+    color: var(--accent);
+    text-shadow: 0 0 20px rgba(0,229,255,0.5);
+    text-decoration: none;
+  }
+  .logo span { color: var(--accent2); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    color: var(--muted); font-size: .9rem; font-weight: 500;
+    text-decoration: none; letter-spacing: .5px;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    background: var(--accent); color: #000;
+    padding: 10px 24px; border-radius: 4px;
+    font-weight: 600; font-size: .88rem;
+    text-decoration: none; letter-spacing: .5px;
+    transition: box-shadow .2s, transform .15s;
+  }
+  .nav-cta:hover { box-shadow: var(--glow); transform: translateY(-1px); }
+
+  /* PAGES */
+  .page { display: none; min-height: 100vh; padding-top: 80px; }
+  .page.active { display: block; }
+
+  /* ========== HOME PAGE ========== */
+  #home { position: relative; overflow: hidden; }
+  .grid-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .orb {
+    position: absolute; border-radius: 50%; filter: blur(90px); z-index: 0; pointer-events: none;
+  }
+  .orb1 { width: 600px; height: 600px; background: rgba(0,229,255,0.07); top: -100px; right: -150px; }
+  .orb2 { width: 500px; height: 500px; background: rgba(123,97,255,0.08); bottom: 50px; left: -200px; }
+
+  .hero {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+    padding: 100px 24px 80px;
+    max-width: 900px; margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,229,255,0.08); border: 1px solid var(--border);
+    border-radius: 999px; padding: 6px 18px;
+    font-size: .78rem; font-family: 'DM Mono', monospace;
+    color: var(--accent); letter-spacing: 1px;
+    margin-bottom: 32px; animation: fadeUp .6s ease both;
+  }
+  .hero-badge::before { content: '●'; font-size: .6rem; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 9vw, 7rem);
+    line-height: .95; letter-spacing: 2px;
+    animation: fadeUp .7s .1s ease both;
+  }
+  h1 .highlight {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: 1.15rem; color: var(--muted); max-width: 560px;
+    margin: 24px auto 0; font-weight: 300;
+    animation: fadeUp .7s .2s ease both;
+  }
+  .hero-actions {
+    display: flex; gap: 16px; margin-top: 40px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp .7s .3s ease both;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000; font-weight: 700; padding: 14px 36px;
+    border-radius: 4px; text-decoration: none; font-size: 1rem;
+    transition: box-shadow .2s, transform .15s; cursor: pointer; border: none;
+  }
+  .btn-primary:hover { box-shadow: 0 0 50px rgba(0,229,255,0.3); transform: translateY(-2px); }
+  .btn-secondary {
+    background: transparent; border: 1px solid var(--border); color: var(--text);
+    padding: 14px 36px; border-radius: 4px; text-decoration: none;
+    font-size: 1rem; transition: border-color .2s, color .2s; cursor: pointer;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:none} }
+
+  /* TICKER */
+  .ticker-wrap {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden; padding: 14px 0;
+    background: rgba(0,229,255,0.02);
+  }
+  .ticker { display: flex; gap: 60px; animation: ticker 28s linear infinite; white-space: nowrap; }
+  .ticker-item {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'DM Mono', monospace; font-size: .82rem; color: var(--muted);
+  }
+  .ticker-item .up { color: #22c55e; }
+  .ticker-item .down { color: #ef4444; }
+  @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* FEATURES */
+  .features {
+    position: relative; z-index: 1;
+    padding: 100px 48px;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace; font-size: .75rem;
+    letter-spacing: 2px; color: var(--accent); text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    letter-spacing: 1px; margin-bottom: 60px;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    transition: border-color .3s, transform .3s, box-shadow .3s;
+    position: relative; overflow: hidden;
+  }
+  .feature-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0; transition: opacity .3s;
+  }
+  .feature-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-4px); box-shadow: var(--glow); }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-icon {
+    font-size: 2.4rem; margin-bottom: 16px;
+    display: block;
+  }
+  .feature-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; }
+  .feature-card p { color: var(--muted); font-size: .92rem; line-height: 1.65; }
+
+  /* STATS BAR */
+  .stats-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 48px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+    gap: 40px; text-align: center;
+    background: var(--surface);
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem; color: var(--accent);
+    display: block; line-height: 1;
+  }
+  .stat-label { color: var(--muted); font-size: .88rem; margin-top: 6px; letter-spacing: .5px; }
+
+  /* ========== ABOUT PAGE ========== */
+  #about { padding: 100px 48px 80px; }
+  .about-inner { max-width: 1100px; margin: 0 auto; }
+  .about-hero {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: center; margin-bottom: 100px;
+  }
+  .about-hero h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    line-height: 1; letter-spacing: 1px; margin-bottom: 24px;
+  }
+  .about-hero p { color: var(--muted); font-size: 1rem; line-height: 1.8; margin-bottom: 16px; }
+  .about-visual {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 40px;
+    font-family: 'DM Mono', monospace; font-size: .82rem;
+    color: var(--accent); line-height: 2;
+    position: relative; overflow: hidden;
+  }
+  .about-visual::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(123,97,255,0.08));
+  }
+
+  .mission-block {
+    background: linear-gradient(135deg, var(--surface), var(--surface2));
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 12px; padding: 48px;
+    margin-bottom: 60px;
+  }
+  .mission-block h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; letter-spacing: 1px; margin-bottom: 16px;
+    color: var(--accent);
+  }
+  .mission-block p { font-size: 1.1rem; color: var(--muted); line-height: 1.8; }
+
+  .team-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+    gap: 24px; margin-top: 40px;
+  }
+  .team-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 32px; text-align: center;
+  }
+  .team-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; margin: 0 auto 16px;
+  }
+  .team-card h4 { font-weight: 600; margin-bottom: 4px; }
+  .team-card span { font-size: .85rem; color: var(--accent); font-family: 'DM Mono', monospace; }
+
+  /* ========== SALES PAGE ========== */
+  #sales { padding: 100px 48px 80px; }
+  .sales-inner { max-width: 1000px; margin: 0 auto; text-align: center; }
+  .sales-inner h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5rem); letter-spacing: 2px; margin-bottom: 16px;
+  }
+  .sales-inner > p { color: var(--muted); font-size: 1.05rem; margin-bottom: 60px; }
+
+  .pricing-card {
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    border-radius: 20px; padding: 60px 48px;
+    max-width: 560px; margin: 0 auto 60px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 0 80px rgba(0,229,255,0.1);
+  }
+  .pricing-card::before {
+    content: '';
+    position: absolute; top: -80px; right: -80px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: rgba(123,97,255,0.1); filter: blur(60px);
+  }
+  .popular-badge {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: #000; font-weight: 700; font-size: .75rem;
+    padding: 5px 18px; border-radius: 999px;
+    letter-spacing: 1px; margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+  .price-amount {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 6rem; line-height: 1; color: var(--accent);
+    text-shadow: 0 0 30px rgba(0,229,255,0.3);
+  }
+  .price-amount sup { font-size: 2.5rem; vertical-align: super; }
+  .price-note { color: var(--muted); font-size: .9rem; margin-top: 8px; margin-bottom: 32px; }
+  .feature-list { list-style: none; text-align: left; margin-bottom: 40px; }
+  .feature-list li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+    font-size: .95rem;
+  }
+  .feature-list li:last-child { border-bottom: none; }
+  .check { color: var(--accent); font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+  .btn-buy {
+    display: block; width: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #000; font-weight: 700; font-size: 1.1rem;
+    padding: 18px; border-radius: 8px; border: none;
+    cursor: pointer; letter-spacing: 1px;
+    transition: box-shadow .2s, transform .15s;
+    text-decoration: none;
+  }
+  .btn-buy:hover { box-shadow: 0 0 60px rgba(0,229,255,0.4); transform: translateY(-2px); }
+
+  .guarantee {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 28px;
+    max-width: 560px; margin: 0 auto 40px;
+    font-size: .88rem; color: var(--muted);
+  }
+  .guarantee .icon { font-size: 2rem; flex-shrink: 0; }
+
+  .comparison-table {
+    width: 100%; border-collapse: collapse; margin-top: 60px; text-align: left;
+    font-size: .9rem;
+  }
+  .comparison-table th {
+    padding: 14px 20px; border-bottom: 2px solid var(--border);
+    font-family: 'DM Mono', monospace; font-size: .78rem;
+    letter-spacing: 1px; color: var(--muted); text-transform: uppercase;
+  }
+  .comparison-table td {
+    padding: 14px 20px; border-bottom: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .comparison-table td:first-child { color: var(--text); font-weight: 500; }
+  .comparison-table td.yes { color: var(--accent); }
+  .comparison-table tr:hover td { background: rgba(0,229,255,0.03); }
+
+  /* ========== CONTACT PAGE ========== */
+  #contact { padding: 100px 48px 80px; }
+  .contact-inner { max-width: 900px; margin: 0 auto; }
+  .contact-inner h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    letter-spacing: 1px; margin-bottom: 12px;
+  }
+  .contact-inner > p { color: var(--muted); margin-bottom: 60px; }
+  .contact-grid {
+    display: grid; grid-template-columns: 1fr 1.3fr; gap: 60px; align-items: start;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 28px; }
+  .contact-item {
+    display: flex; align-items: flex-start; gap: 16px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px 24px;
+  }
+  .contact-item .ci-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .contact-item h4 { font-size: .8rem; color: var(--muted); font-family: 'DM Mono', monospace; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; }
+  .contact-item p { font-size: .95rem; color: var(--text); }
+  .contact-item a { color: var(--accent); text-decoration: none; }
+
+  .social-links { display: flex; flex-direction: column; gap: 12px; }
+  .social-link {
+    display: flex; align-items: center; gap: 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px;
+    text-decoration: none; color: var(--text);
+    font-size: .95rem; font-weight: 500;
+    transition: border-color .2s, color .2s;
+  }
+  .social-link:hover { border-color: var(--accent); color: var(--accent); }
+  .social-link span.si { font-size: 1.4rem; }
+
+  .contact-form { display: flex; flex-direction: column; gap: 18px; }
+  .form-group label {
+    display: block; font-size: .78rem; font-family: 'DM Mono', monospace;
+    letter-spacing: 1px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 16px; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: .95rem;
+    transition: border-color .2s;
+    outline: none;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus { border-color: var(--accent); }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  .form-group select option { background: var(--surface); }
+  .form-success {
+    display: none;
+    background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
+    border-radius: 8px; padding: 16px 20px;
+    color: #22c55e; font-size: .9rem;
+    text-align: center;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 20px;
+    background: var(--surface);
+  }
+  footer .logo-sm { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--accent); letter-spacing: 2px; }
+  footer p { font-size: .82rem; color: var(--muted); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .features, #about, #sales, #contact { padding: 80px 20px 60px; }
+    .about-hero, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .stats-bar { padding: 40px 20px; }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#" onclick="showPage('home')">FINAXIS<span>AI</span></a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('home')">Home</a></li>
+    <li><a href="#" onclick="showPage('about')">About</a></li>
+    <li><a href="#" onclick="showPage('sales')">Pricing</a></li>
+    <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+  </ul>
+  <a class="nav-cta" href="#" onclick="showPage('sales')">GET ACCESS →</a>
+</nav>
+
+<!-- ============ HOME ============ -->
+<div id="home" class="page active">
+  <div class="grid-bg"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <section class="hero">
+    <div class="hero-badge">● LIVE AI · REAL-TIME MARKETS</div>
+    <h1>YOUR ENTIRE<br><span class="highlight">FINANCIAL LIFE</span><br>AUTOMATED</h1>
+    <p class="hero-sub">Stocks, bonds, ETFs, tax filing, portfolio rebalancing — all managed by a single AI built for serious investors. One payment. Lifetime access.</p>
+    <div class="hero-actions">
+      <a class="btn-primary" href="#" onclick="showPage('sales')">Get Lifetime Access</a>
+      <a class="btn-secondary" href="#" onclick="showPage('about')">Learn More</a>
+    </div>
+  </section>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span class="ticker-item">AAPL <span class="up">▲ 2.14%</span></span>
+      <span class="ticker-item">SPY <span class="up">▲ 0.87%</span></span>
+      <span class="ticker-item">BND <span class="down">▼ 0.22%</span></span>
+      <span class="ticker-item">TSLA <span class="up">▲ 4.61%</span></span>
+      <span class="ticker-item">QQQ <span class="up">▲ 1.33%</span></span>
+      <span class="ticker-item">VTI <span class="up">▲ 0.55%</span></span>
+      <span class="ticker-item">NVDA <span class="up">▲ 5.02%</span></span>
+      <span class="ticker-item">GLD <span class="down">▼ 0.18%</span></span>
+      <span class="ticker-item">MSFT <span class="up">▲ 1.77%</span></span>
+      <span class="ticker-item">T-BILL 4.92% <span class="up">↑</span></span>
+      <!-- duplicate for seamless loop -->
+      <span class="ticker-item">AAPL <span class="up">▲ 2.14%</span></span>
+      <span class="ticker-item">SPY <span class="up">▲ 0.87%</span></span>
+      <span class="ticker-item">BND <span class="down">▼ 0.22%</span></span>
+      <span class="ticker-item">TSLA <span class="up">▲ 4.61%</span></span>
+      <span class="ticker-item">QQQ <span class="up">▲ 1.33%</span></span>
+      <span class="ticker-item">VTI <span class="up">▲ 0.55%</span></span>
+      <span class="ticker-item">NVDA <span class="up">▲ 5.02%</span></span>
+      <span class="ticker-item">GLD <span class="down">▼ 0.18%</span></span>
+      <span class="ticker-item">MSFT <span class="up">▲ 1.77%</span></span>
+      <span class="ticker-item">T-BILL 4.92% <span class="up">↑</span></span>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <section class="features">
+    <p class="section-label">// What FinAxis AI Does</p>
+    <h2 class="section-title">EVERYTHING YOUR FINANCIAL ADVISOR CAN'T</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">📈</span>
+        <h3>Stock Portfolio Manager</h3>
+        <p>AI-driven analysis of your holdings, sector exposure, and risk tolerance. Get real-time buy/sell/hold signals and automatic rebalancing suggestions.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🏦</span>
+        <h3>Bonds & Fixed Income</h3>
+        <p>Treasury bonds, municipal bonds, corporate bonds — FinAxis AI scans yield curves and credit ratings to optimize your fixed-income allocation.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🗂️</span>
+        <h3>ETF Strategy Engine</h3>
+        <p>Compare thousands of ETFs by expense ratio, tracking error, and performance. Build a low-cost, diversified portfolio in minutes.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🧾</span>
+        <h3>Automated Tax Filing</h3>
+        <p>Connect your brokerage accounts and let FinAxis AI handle capital gains calculations, tax-loss harvesting, and complete your Schedule D automatically.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">⚖️</span>
+        <h3>Risk & Diversification Analysis</h3>
+        <p>Visualize your true portfolio risk across asset classes, geographies, and sectors. Get plain-English explanations and actionable fixes.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">🤖</span>
+        <h3>24/7 Financial AI Chat</h3>
+        <p>Ask anything — "Should I Roth convert this year?" "What's my effective tax rate?" — and get instant, personalized answers backed by real data.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div>
+      <span class="stat-num">$2.4B+</span>
+      <p class="stat-label">Assets Analyzed</p>
+    </div>
+    <div>
+      <span class="stat-num">48K+</span>
+      <p class="stat-label">Active Investors</p>
+    </div>
+    <div>
+      <span class="stat-num">99.97%</span>
+      <p class="stat-label">Uptime SLA</p>
+    </div>
+    <div>
+      <span class="stat-num">4.9★</span>
+      <p class="stat-label">User Rating</p>
+    </div>
+  </div>
+
+  <footer>
+    <span class="logo-sm">FINAXISAI</span>
+    <p>© 2026 FinAxis AI. All rights reserved. Not financial advice. For educational purposes.</p>
+    <div style="display:flex;gap:20px">
+      <a href="#" onclick="showPage('about')" style="color:var(--muted);font-size:.85rem;text-decoration:none">About</a>
+      <a href="#" onclick="showPage('contact')" style="color:var(--muted);font-size:.85rem;text-decoration:none">Contact</a>
+      <a href="#" onclick="showPage('sales')" style="color:var(--muted);font-size:.85rem;text-decoration:none">Pricing</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<div id="about" class="page">
+  <div class="about-inner">
+    <div class="about-hero">
+      <div>
+        <p class="section-label">// Our Story</p>
+        <h2>BUILT BY TRADERS.<br>BUILT FOR EVERYONE.</h2>
+        <p>FinAxis AI was founded after years of frustration watching everyday investors pay thousands for financial advice that algorithms could deliver in seconds — and do it better.</p>
+        <p>We combined machine learning, real-time market data, and tax code automation into one seamless platform. No subscriptions. No hidden fees. No advisors taking a cut of your returns.</p>
+        <p>Our team of former quant traders, tax attorneys, and AI engineers built the product they always wished existed.</p>
+      </div>
+      <div class="about-visual">
+        <div style="color:var(--muted);margin-bottom:8px">// FinAxis AI · Core Engine v3.1</div>
+        <div>→ Loading market data feeds........<span style="color:#22c55e">OK</span></div>
+        <div>→ Connecting brokerage APIs........<span style="color:#22c55e">OK</span></div>
+        <div>→ Initializing tax engine...........<span style="color:#22c55e">OK</span></div>
+        <div>→ Risk model calibration............<span style="color:#22c55e">OK</span></div>
+        <div>→ ETF universe (12,847 funds).......<span style="color:#22c55e">OK</span></div>
+        <div>→ Bond yield curve parser...........<span style="color:#22c55e">OK</span></div>
+        <div style="margin-top:20px;color:#22c55e">✓ All systems operational.</div>
+        <div style="color:var(--muted);font-size:.72rem;margin-top:16px">Last sync: April 13, 2026 · 09:31 EST</div>
+      </div>
+    </div>
+
+    <!-- Mission Statement -->
+    <div class="mission-block">
+      <h3>🎯 Our Mission Statement</h3>
+      <p>At FinAxis AI, our mission is to democratize sophisticated financial intelligence by providing every investor — from first-time savers to seasoned portfolio managers — with institutional-grade AI tools that are transparent, affordable, and empowering. We believe financial freedom should not be gated by wealth, connections, or expensive advisors. Through relentless innovation and radical simplicity, we are rewriting what it means to manage your money.</p>
+    </div>
+
+    <!-- Team -->
+    <p class="section-label">// The Team Behind The Platform</p>
+    <h2 class="section-title" style="font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:1px;margin-bottom:40px">THE MINDS OF FINAXIS</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">👩‍💻</div>
+        <h4>Dr. Serena Voss</h4>
+        <span>CEO & Co-Founder</span>
+        <p style="color:var(--muted);font-size:.85rem;margin-top:10px">Former Goldman Sachs quant. PhD in Computational Finance, MIT.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">🧠</div>
+        <h4>Marcus Chen</h4>
+        <span>CTO & Co-Founder</span>
+        <p style="color:var(--muted);font-size:.85rem;margin-top:10px">Ex-Google DeepMind. Built AI trading systems managing $800M+ in assets.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">⚖️</div>
+        <h4>Priya Nallan, JD</h4>
+        <span>Head of Tax Intelligence</span>
+        <p style="color:var(--muted);font-size:.85rem;margin-top:10px">Tax attorney with 14 years of IRS and estate planning experience.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">📊</div>
+        <h4>Eli Torres</h4>
+        <span>Head of Product</span>
+        <p style="color:var(--muted);font-size:.85rem;margin-top:10px">Built fintech products at Robinhood and Wealthfront. UX obsessed.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer style="margin-top:80px">
+    <span class="logo-sm">FINAXISAI</span>
+    <p>© 2026 FinAxis AI. All rights reserved.</p>
+    <div style="display:flex;gap:20px">
+      <a href="#" onclick="showPage('home')" style="color:var(--muted);font-size:.85rem;text-decoration:none">Home</a>
+      <a href="#" onclick="showPage('contact')" style="color:var(--muted);font-size:.85rem;text-decoration:none">Contact</a>
+      <a href="#" onclick="showPage('sales')" style="color:var(--muted);font-size:.85rem;text-decoration:none">Pricing</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ============ SALES ============ -->
+<div id="sales" class="page">
+  <div class="sales-inner">
+    <p class="section-label" style="text-align:center">// Simple, Honest Pricing</p>
+    <h2>ONE PRICE.<br>FOREVER.</h2>
+    <p>No monthly fees. No percentage of assets. No upsells. Buy once, use for life.</p>
+
+    <div class="pricing-card">
+      <div class="popular-badge">⚡ LIFETIME ACCESS</div>
+      <div class="price-amount"><sup>$</sup>297</div>
+      <p class="price-note">One-time payment · No recurring charges · All future updates included</p>
+
+      <ul class="feature-list">
+        <li><span class="check">✓</span> Full Stock Portfolio AI — unlimited analysis & signals</li>
+        <li><span class="check">✓</span> Bond & Fixed-Income Optimizer</li>
+        <li><span class="check">✓</span> ETF Strategy Engine (12,800+ ETFs)</li>
+        <li><span class="check">✓</span> Automated Tax Filing & Schedule D Export</li>
+        <li><span class="check">✓</span> AI Tax-Loss Harvesting Alerts</li>
+        <li><span class="check">✓</span> Real-Time Risk & Diversification Dashboard</li>
+        <li><span class="check">✓</span> Brokerage Account Integration (50+ brokers)</li>
+        <li><span class="check">✓</span> 24/7 Financial AI Chat — unlimited queries</li>
+        <li><span class="check">✓</span> Retirement & FIRE Planning Tools</li>
+        <li><span class="check">✓</span> All future feature updates, forever</li>
+      </ul>
+
+      <a class="btn-buy" href="#" onclick="showPage('contact')">BUY NOW — $297 ONE TIME →</a>
+    </div>
+
+    <div class="guarantee">
+      <span class="icon">🛡️</span>
+      <div>
+        <strong>30-Day Money-Back Guarantee.</strong><br>
+        Not satisfied? Email us within 30 days for a full refund — no questions asked.
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <p class="section-label" style="text-align:center;margin-top:60px">// How We Compare</p>
+    <h3 style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:1px;text-align:center;margin-bottom:30px">FINAXIS AI VS. THE ALTERNATIVES</h3>
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th style="color:var(--accent)">FinAxis AI</th>
+          <th>Traditional Advisor</th>
+          <th>Other Apps</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Stock Portfolio Analysis</td><td class="yes">✓ Unlimited</td><td>Limited</td><td>Basic</td></tr>
+        <tr><td>Bond Optimization</td><td class="yes">✓ Full</td><td>Yes ($$$$)</td><td>Rarely</td></tr>
+        <tr><td>ETF Strategy</td><td class="yes">✓ 12,800+ ETFs</td><td>Sometimes</td><td>Partial</td></tr>
+        <tr><td>Automated Tax Filing</td><td class="yes">✓ Included</td><td>Extra Fee</td><td>No</td></tr>
+        <tr><td>Tax-Loss Harvesting</td><td class="yes">✓ Real-time</td><td>Annual only</td><td>Premium only</td></tr>
+        <tr><td>24/7 AI Chat</td><td class="yes">✓ Unlimited</td><td>Business hours</td><td>Limited</td></tr>
+        <tr><td>Cost</td><td class="yes">$297 one-time</td><td>1–2% AUM/year</td><td>$10–$40/mo</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer style="margin-top:80px">
+    <span class="logo-sm">FINAXISAI</span>
+    <p>© 2026 FinAxis AI. Not financial advice. For educational & demonstration purposes only.</p>
+    <div style="display:flex;gap:20px">
+      <a href="#" onclick="showPage('home')" style="color:var(--muted);font-size:.85rem;text-decoration:none">Home</a>
+      <a href="#" onclick="showPage('about')" style="color:var(--muted);font-size:.85rem;text-decoration:none">About</a>
+      <a href="#" onclick="showPage('contact')" style="color:var(--muted);font-size:.85rem;text-decoration:none">Contact</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ============ CONTACT ============ -->
+<div id="contact" class="page">
+  <div class="contact-inner">
+    <p class="section-label">// Reach Out</p>
+    <h2>GET IN TOUCH</h2>
+    <p>Questions about FinAxis AI? We respond to all inquiries within 24 hours.</p>
+
+    <div class="contact-grid">
+      <!-- Left: Info + Socials -->
+      <div>
+        <div class="contact-info" style="margin-bottom:32px">
+          <div class="contact-item">
+            <span class="ci-icon">📧</span>
+            <div>
+              <h4>Email</h4>
+              <p><a href="mailto:support@finaxisai.com">support@finaxisai.com</a></p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="ci-icon">🏢</span>
+            <div>
+              <h4>Business Address</h4>
+              <p>100 Market Street, Suite 900<br>San Francisco, CA 94105</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <span class="ci-icon">🕐</span>
+            <div>
+              <h4>Support Hours</h4>
+              <p>Mon–Fri, 9AM–6PM PT<br>AI chat available 24/7</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="section-label" style="margin-bottom:16px">// Follow Us</p>
+        <div class="social-links">
+          <a href="#" class="social-link">
+            <span class="si">𝕏</span> @FinAxisAI on X (Twitter)
+          </a>
+          <a href="#" class="social-link">
+            <span class="si">📸</span> @FinAxisAI on Instagram
+          </a>
+          <a href="#" class="social-link">
+            <span class="si">💼</span> FinAxis AI on LinkedIn
+          </a>
+          <a href="#" class="social-link">
+            <span class="si">▶️</span> FinAxisAI on YouTube
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Form -->
+      <div>
+        <div class="contact-form">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" id="f-name" placeholder="John Smith" />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="f-email" placeholder="john@email.com" />
+          </div>
+          <div class="form-group">
+            <label>Topic</label>
+            <select id="f-topic">
+              <option value="">Select a topic...</option>
+              <option>Purchase & Billing</option>
+              <option>Technical Support</option>
+              <option>Feature Question</option>
+              <option>Partnership Inquiry</option>
+              <option>Media / Press</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea id="f-msg" placeholder="Tell us how we can help..."></textarea>
+          </div>
+          <button class="btn-primary" onclick="submitForm()" style="width:100%;padding:14px;font-size:1rem">SEND MESSAGE →</button>
+          <div class="form-success" id="form-success">
+            ✓ Message sent! We'll get back to you within 24 hours.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer style="margin-top:80px">
+    <span class="logo-sm">FINAXISAI</span>
+    <p>© 2026 FinAxis AI. All rights reserved.</p>
+    <div style="display:flex;gap:20px">
+      <a href="#" onclick="showPage('home')" style="color:var(--muted);font-size:.85rem;text-decoration:none">Home</a>
+      <a href="#" onclick="showPage('about')" style="color:var(--muted);font-size:.85rem;text-decoration:none">About</a>
+      <a href="#" onclick="showPage('sales')" style="color:var(--muted);font-size:.85rem;text-decoration:none">Pricing</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function submitForm() {
+    const name = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const msg = document.getElementById('f-msg').value.trim();
+    if (!name || !email || !msg) {
+      alert('Please fill in your name, email, and message.');
+      return;
+    }
+    document.getElementById('form-success').style.display = 'block';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-email').value = '';
+    document.getElementById('f-msg').value = '';
+    document.getElementById('f-topic').value = '';
+  }
+</script>
+</body>
+</html>
